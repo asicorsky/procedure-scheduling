@@ -1,4 +1,4 @@
-package com.procedure.scheduling.web.rest.patient;
+package com.procedure.scheduling.web.controller.patient;
 
 import com.procedure.scheduling.web.Navigation;
 import org.springframework.web.bind.annotation.RequestMapping;

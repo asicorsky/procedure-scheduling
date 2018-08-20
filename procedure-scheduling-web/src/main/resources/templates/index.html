@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link href="../static/css/bootstrap/bootstrap.min.css" rel="stylesheet" th:href="@{/resources/css/bootstrap.min.css}"/>
-    <script src="../static/js/bootstrap/bootstrap.min.js" type="text/javascript" th:src="@{/resources/js/bootstrap.min.js}"></script>
+    <script src="../static/js/jquery/jquery.min.js" type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script src="../static/js/popper/popper.min.js" type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+    <script src="../static/js/bootstrap/bootstrap.min.js" type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src="../static/js/application/index.js" type="text/javascript" th:src="@{/js/index.js}"></script>
+
+    <link href="../static/css/bootstrap/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
 </head>
 <body>
+<div th:insert="fragments/header :: header"></div>
 <h1>Hello, World</h1>
+<div th:insert="fragments/footer :: footer"></div>
 </body>
 </html>
