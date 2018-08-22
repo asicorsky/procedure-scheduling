@@ -1,6 +1,5 @@
 package com.procedure.scheduling.dto.study;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.procedure.scheduling.dto.doctor.DoctorDto;
 import com.procedure.scheduling.dto.patient.PatientDto;
@@ -20,9 +19,8 @@ public class StudyDto {
 	private final Date estimatedEndTime;
 
 	public StudyDto(@JsonProperty("id") Long id, @JsonProperty("description") String description, @JsonProperty("patient") PatientDto patient, @JsonProperty("room") RoomDto room,
-			@JsonProperty("doctor") DoctorDto doctor, @JsonProperty("status") Status status,
-			/*@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")*/ @JsonProperty("plannedStartTime") Date plannedStartTime,
-			/*@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")*/ @JsonProperty("estimatedEndTime") Date estimatedEndTime) {
+			@JsonProperty("doctor") DoctorDto doctor, @JsonProperty("status") Status status, @JsonProperty("plannedStartTime") Date plannedStartTime,
+			@JsonProperty("estimatedEndTime") Date estimatedEndTime) {
 
 		this.id = id;
 		this.description = description;

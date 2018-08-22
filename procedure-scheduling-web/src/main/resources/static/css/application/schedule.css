@@ -1,0 +1,17 @@
+.room-name {
+    width: 50px;
+}
+
+.table-head-centered {
+    text-align: center;
+}
+
+.scheduled-cell {
+    background-color: firebrick;
+    border-left: none !important;
+    border-right: none !important;
+}
+
+.hovered-scheduled-cell {
+    opacity: 0.5;
+}

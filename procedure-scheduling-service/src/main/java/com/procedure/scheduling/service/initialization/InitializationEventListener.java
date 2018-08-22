@@ -63,27 +63,60 @@ public class InitializationEventListener implements ApplicationListener<ContextR
 		var rooms = IntStream.range(0, ROOMS_COUNT).mapToObj(idx -> roomService.addRoom(new RoomDto(null, "Room #" + String.valueOf(idx)))).collect(Collectors.toList());
 		var patients = IntStream.range(0, PATIENTS_COUNT).mapToObj(idx -> patientService.addPatient(
 				new PatientDto(null, "Patient " + String.valueOf(idx), idx % 2 == 0 ? Sex.Male : Sex.Female,
-						DateUtils.from(randomIntFromRange(1940, 2018), randomIntFromRange(0, 11), randomIntFromRange(0, 28))))).collect(Collectors.toList());
+						DateUtils.from(randomIntFromRange(1940, 2018), randomIntFromRange(0, 11), randomIntFromRange(1, 28))))).collect(Collectors.toList());
 		var doctors = IntStream.range(0, DOCTORS_COUNT).mapToObj(idx -> doctorService.addDoctor(new DoctorDto(null, "Doctor " + String.valueOf(idx)))).collect(Collectors.toList());
 
 		IntStream.range(0, STUDIES_COUNT).forEach(index -> {
 
-			Calendar calendar = Calendar.getInstance();
-			int plannedHour = randomIntFromRange(2, 19);
-			int estimatedHour = randomIntFromRange(plannedHour + 1, 22);
-			int plannedMinute = randomIntFromRange(0, 40);
-			int estimatedMinute = randomIntFromRange(plannedMinute + 15, 60);
-			Date plannedStartTime = DateUtils
-					.roundQuarterHour(DateUtils.from(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), plannedHour, plannedMinute));
-			Date estimatedEndTime = DateUtils.roundQuarterHour(
-					DateUtils.from(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), estimatedHour, estimatedMinute));
 			RoomDto room = randomElement(rooms);
+			DatePair pair = getNonOverlappedDatesForRoom(room);
+
 			PatientDto patient = randomElement(patients);
 			DoctorDto doctor = randomElement(doctors);
 			Status status = index % 5 == 0 ? Status.InProgress : index % 2 == 0 ? Status.Finished : Status.Planned;
 
-			StudyDto dto = new StudyDto(null, "Description " + String.valueOf(index), patient, room, doctor, status, plannedStartTime, estimatedEndTime);
+			StudyDto dto = new StudyDto(null, "Description " + String.valueOf(index), patient, room, doctor, status, pair.from, pair.to);
 			studyService.addStudy(dto);
+
 		});
+	}
+
+	//looks too complicated, but it just for testing data with non-overlapped dates
+	private DatePair getNonOverlappedDatesForRoom(RoomDto room) {
+
+		Calendar calendar = Calendar.getInstance();
+		int plannedHour = randomIntFromRange(2, 19);
+		int estimatedHour = randomIntFromRange(plannedHour + 1, 22);
+		int plannedMinute = randomIntFromRange(0, 40);
+		int estimatedMinute = randomIntFromRange(plannedMinute + 15, 60);
+		Date plannedStartTime = DateUtils
+				.roundQuarterHour(DateUtils.from(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), plannedHour, plannedMinute));
+		Date estimatedEndTime = DateUtils
+				.roundQuarterHour(DateUtils.from(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), estimatedHour, estimatedMinute));
+
+		while (studyService.isOverlapped(plannedStartTime, estimatedEndTime, room)) {
+
+			plannedHour = randomIntFromRange(0, 19);
+			estimatedHour = randomIntFromRange(plannedHour + 1, 22);
+			plannedMinute = randomIntFromRange(0, 40);
+			estimatedMinute = randomIntFromRange(plannedMinute + 15, 60);
+			plannedStartTime = DateUtils
+					.roundQuarterHour(DateUtils.from(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), plannedHour, plannedMinute));
+			estimatedEndTime = DateUtils.roundQuarterHour(
+					DateUtils.from(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), estimatedHour, estimatedMinute));
+		}
+		return new DatePair(plannedStartTime, estimatedEndTime);
+	}
+
+	private static class DatePair {
+
+		private final Date from;
+		private final Date to;
+
+		private DatePair(Date from, Date to) {
+
+			this.from = from;
+			this.to = to;
+		}
 	}
 }

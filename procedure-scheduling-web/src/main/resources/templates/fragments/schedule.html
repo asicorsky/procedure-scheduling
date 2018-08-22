@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="../../static/js/jquery/jquery.min.js" type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script src="../../static/js/popper/popper.min.js" type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+    <script src="../../static/js/bootstrap/bootstrap.min.js" type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src="../../static/js/application/schedule.js" type="text/javascript" th:src="@{/js/schedule.js}"></script>
+
+    <link href="../../static/css/bootstrap/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link href="../../static/css/application/application.css" rel="stylesheet" th:href="@{/css/application.css}"/>
+    <link href="../../static/css/application/schedule.css" rel="stylesheet" th:href="@{/css/schedule.css}"/>
+</head>
+<body>
+<div th:fragment="schedule">
+    <div class="schedule">
+        <table class="schedule-table table table-bordered table-striped">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -35,4 +35,31 @@ public final class DateUtils {
 		calendar.add(Calendar.MINUTE, mod < 8 ? -mod : (15 - mod));
 		return calendar.getTime();
 	}
+
+	public static Date now() {
+
+		return new Date();
+	}
+
+	public static Date toEndOfDay(Date date) {
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		calendar.set(Calendar.MILLISECOND, 999);
+		return calendar.getTime();
+	}
+
+	public static Date toStartOfDay(Date date) {
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return calendar.getTime();
+	}
 }

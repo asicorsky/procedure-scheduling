@@ -10,6 +10,7 @@ import com.procedure.scheduling.domain.repository.DoctorRepository;
 import com.procedure.scheduling.domain.repository.PatientRepository;
 import com.procedure.scheduling.domain.repository.RoomRepository;
 import com.procedure.scheduling.domain.repository.StudyRepository;
+import com.procedure.scheduling.dto.room.RoomDto;
 import com.procedure.scheduling.dto.study.StudyDto;
 import com.procedure.scheduling.service.mapper.DtoMapper;
 import com.procedure.scheduling.service.mapper.EntityMapper;
@@ -17,6 +18,7 @@ import com.procedure.scheduling.service.study.StudyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,5 +58,19 @@ public class StudyServiceImpl implements StudyService {
 	public List<StudyDto> getStudies() {
 
 		return studyRepository.findAll().stream().map(DtoMapper::toStudyDto).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<StudyDto> getStudiesForRoom(Date from, Date to, RoomDto room) {
+
+		RoomEntity entity = roomRepository.findByName(room.getName()).orElseThrow(EntityNotFoundException::new);
+		return studyRepository.findOverlappedStudies(from, to, entity).stream().map(DtoMapper::toStudyDto).collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean isOverlapped(Date startDate, Date endDate, RoomDto room) {
+
+		RoomEntity entity = roomRepository.findByName(room.getName()).orElseThrow(EntityNotFoundException::new);
+		return !studyRepository.findOverlappedStudies(startDate, endDate, entity).isEmpty();
 	}
 }
