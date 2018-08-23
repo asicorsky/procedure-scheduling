@@ -14,7 +14,6 @@
 }
 
 .scheduled-cell {
-    background-color: firebrick;
     cursor: pointer;
     color: white;
     font-size: 12px;

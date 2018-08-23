@@ -12,51 +12,13 @@
 </head>
 <body>
 <div th:fragment="schedule">
-    <div class="modal" id="roomBooking" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group row">
-                        <label for="description" class="col-3 col-form-label">Description:</label>
-                        <input type="text" id="description" class="col-8 form-control">
-                    </div>
-                    <div class="form-group row">
-                        <label for="doctorName" class="col-3 col-form-label">Doctor:</label>
-                        <select id="doctorName" class="col-8 form-control"></select>
-                    </div>
-                    <div class="form-group row">
-                        <label for="selectPatient" class="col-3 col-form-label">Patient:</label>
-                        <select id="selectPatient" class="col-6 form-control"></select>
-                        <button type="button" class="btn btn-info col-2" id="addPatient">Add Patient</button>
-                    </div>
-                    <div class="form-group row">
-                        <label for="startTime" class="col-3 col-form-label">Planned Start Time:</label>
-                        <input type="text" id="startTime" class="col-8 form-control">
-                    </div>
-                    <div class="form-group row">
-                        <label for="endTime" class="col-3 col-form-label">Estimated End Time:</label>
-                        <input type="text" id="endTime" class="col-8 form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="schedule">
         <table class="schedule-table table table-bordered table-striped">
             <thead></thead>
             <tbody></tbody>
         </table>
     </div>
+
 </div>
 </body>
 </html>

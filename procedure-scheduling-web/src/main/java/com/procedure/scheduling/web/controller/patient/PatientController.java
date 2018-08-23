@@ -26,4 +26,11 @@ public class PatientController {
 		var patients = service.getAvailablePatients();
 		return ResponseEntity.ok(patients);
 	}
+
+	@PostMapping(Navigation.LOAD_ALL)
+	public ResponseEntity<?> getPatients() {
+
+		var patients = service.getPatients();
+		return ResponseEntity.ok(patients);
+	}
 }

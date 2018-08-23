@@ -17,4 +17,6 @@ public interface StudyService {
 	List<StudyDto> getStudiesForRoom(Date from, Date to, RoomDto rom);
 
 	boolean isOverlapped(Date startDate, Date endDate, RoomDto room);
+
+	StudyDto getStudy(long id);
 }

@@ -3,6 +3,7 @@ package com.procedure.scheduling.service.event.impl;
 import com.procedure.scheduling.common.utils.DateUtils;
 import com.procedure.scheduling.dto.schedule.EventDto;
 import com.procedure.scheduling.dto.schedule.EventRowDto;
+import com.procedure.scheduling.dto.study.StudyDto;
 import com.procedure.scheduling.service.event.EventService;
 import com.procedure.scheduling.service.room.RoomService;
 import com.procedure.scheduling.service.study.StudyService;
@@ -43,5 +44,13 @@ public class EventServiceImpl implements EventService {
 
 			return new EventRowDto(room, events);
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public EventDto getEvent(long id) {
+
+		StudyDto study = studyService.getStudy(id);
+		return new EventDto(study.getId(), study.getDescription(), study.getStatus(), study.getPlannedStartTime(), study.getEstimatedEndTime(), study.getDoctor(),
+				study.getPatient());
 	}
 }

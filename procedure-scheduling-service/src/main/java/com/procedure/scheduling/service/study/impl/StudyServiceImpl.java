@@ -73,4 +73,11 @@ public class StudyServiceImpl implements StudyService {
 		RoomEntity entity = roomRepository.findByName(room.getName()).orElseThrow(EntityNotFoundException::new);
 		return !studyRepository.findOverlappedStudies(startDate, endDate, entity).isEmpty();
 	}
+
+	@Override
+	public StudyDto getStudy(long id) {
+
+		StudyEntity entity = studyRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		return DtoMapper.toStudyDto(entity);
+	}
 }

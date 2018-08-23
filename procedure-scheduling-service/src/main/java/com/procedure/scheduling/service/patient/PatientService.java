@@ -11,4 +11,6 @@ public interface PatientService {
 	PatientDto addPatient(PatientDto patient);
 
 	List<PatientDto> getAvailablePatients();
+
+	List<PatientDto> getPatients();
 }

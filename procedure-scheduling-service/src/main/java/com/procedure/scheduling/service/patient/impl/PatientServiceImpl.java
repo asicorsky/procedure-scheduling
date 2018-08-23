@@ -38,4 +38,12 @@ public class PatientServiceImpl implements PatientService {
 		var entities = patientRepository.findAvailablePatients();
 		return entities.stream().map(DtoMapper::toPatientDto).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<PatientDto> getPatients() {
+
+		var entities = patientRepository.findAll();
+		return entities.stream().map(DtoMapper::toPatientDto).collect(Collectors.toList());
+	}
 }
+

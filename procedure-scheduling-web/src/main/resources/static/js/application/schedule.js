@@ -4,15 +4,54 @@ var MINUTES_INDEXES = {
     30: 3,
     45: 4
 };
+var COLOR_MAPPING = {
+    0: "#8b0000",
+    1: "#ff9900",
+    2: "#ffb02e",
+    3: "#228b22",
+    4: "#3b83bd",
+    5: "#000080",
+    6: "#4f0070"
+};
 
 $(document).ready(function () {
 
+    $("#roomBooking").on("hide.bs.modal", function () {
+
+
+    });
+
     $("#roomBooking").on("show.bs.modal", function () {
 
-        $.post("/patient/load/available", function (response) {
+        var eventId = $(this).data("event");
+        // no needed for current application because we send all the data in previous call (Navigation.LOAD_TODAY)
+        // but it not related to real world (in real world we plan to use something like short dto objects)
+        // So, do loading by id because of it.
 
-            console.log(response);
+        $.post("/event/load/" + eventId, function (event) {
+
+            $.post("/patient/load/all", function (patients) {
+
+                var control = $("#selectPatient");
+                control.html("");
+                var html = "";
+
+                var recipient = patients.filter(function (patient) {
+                    return patient.id === event.patient.id;
+                })[0];
+
+                $.each(patients, function (index, patient) {
+
+                    html += "<option value=" + patient.id + ">" + patient.name + "</option>";
+                });
+
+                control.html(html);
+                control.val(recipient.id);
+
+                $(this).data("id");
+            });
         });
+
     });
 });
 
@@ -71,15 +110,13 @@ function draw(rows) {
 
     tbody.html(html);
 
-    var events = [];
-
     $.each(positions, function (index, element) {
 
         var id = element.for;
         var event = element.item;
-        events[id] = event;
+        var color = COLOR_MAPPING[id % 7];
         var eventId = event.id;
-        var firstCell = $("td.time-cell[data-position=" + id + "_" + element.fromIdx + "]");
+        var firstCell = $("td.time-cell[data-position=" + id + "_" + element.fromIdx + "]").css("background", color);
         firstCell.attr("data-event", eventId).attr("colspan", element.toIdx - element.fromIdx + 1).addClass("scheduled-cell");
         for (var i = element.fromIdx + 1; i <= element.toIdx; i++) {
             var position = id + "_" + i;
@@ -98,9 +135,12 @@ function draw(rows) {
 
         var bookingWindow = $("#roomBooking");
         if ($(this).hasClass("scheduled-cell")) {
-            bookingWindow.show("modal");
+
             bookingWindow.data("event", $(this).data("event"));
+            bookingWindow.data("mode", "EDIT");
             bookingWindow.find(".modal-title").text("Edit");
+
+            bookingWindow.modal("show");
         } else {
             console.log("non-scheduled");
         }
