@@ -18,11 +18,21 @@ $(document).ready(function () {
 
     $("#roomBooking").on("hide.bs.modal", function () {
 
+        var selectPatient = $("#selectPatient");
+        selectPatient.html("");
+        var selectDoctor = $("#doctorName");
+        selectDoctor.html("");
+        $("#description").val("");
+        $("#startHour").val(-1);
+        $("#startMinute").val(-1);
+        $("#endHour").val(-1);
+        $("#endMinute").val(-1);
 
     });
 
     $("#roomBooking").on("show.bs.modal", function () {
 
+        var isEdit = $(this).data("mode") === "EDIT";
         var eventId = $(this).data("event");
         // no needed for current application because we send all the data in previous call (Navigation.LOAD_TODAY)
         // but it not related to real world (in real world we plan to use something like short dto objects)
@@ -30,28 +40,59 @@ $(document).ready(function () {
 
         $.post("/event/load/" + eventId, function (event) {
 
-            $.post("/patient/load/all", function (patients) {
+            $.post("/patient/load/available", function (patients) {
 
-                var control = $("#selectPatient");
-                control.html("");
+                patients.push(event.patient);
+                patients.sort(function (a, b) {
+                    return a.id - b.id;
+                });
+                var selectPatient = $("#selectPatient");
+                selectPatient.html("");
+
                 var html = "";
-
                 var recipient = patients.filter(function (patient) {
                     return patient.id === event.patient.id;
                 })[0];
-
                 $.each(patients, function (index, patient) {
-
                     html += "<option value=" + patient.id + ">" + patient.name + "</option>";
                 });
+                selectPatient.html(html);
+                selectPatient.val(recipient.id);
 
-                control.html(html);
-                control.val(recipient.id);
+                $.post("/doctor/load/available", function (doctors) {
 
-                $(this).data("id");
+                    doctors.push(event.doctor);
+                    doctors.sort(function (a, b) {
+                        return a.id - b.id;
+                    });
+
+                    var selectDoctor = $("#doctorName");
+                    selectDoctor.html("");
+
+                    var html = "";
+                    var selectedDoctor = doctors.filter(function (doctor) {
+                        return doctor.id === event.doctor.id;
+                    })[0];
+                    $.each(doctors, function (index, doctor) {
+                        html += "<option value=" + doctor.id + ">" + doctor.name + "</option>";
+                    });
+                    selectDoctor.html(html);
+                    selectDoctor.val(selectedDoctor.id);
+
+                    $("#description").val(event.description);
+
+                    var startTime = new Date(event.plannedStartTime);
+                    $("#startHour").val(startTime.getHours());
+                    $("#startMinute").val(startTime.getMinutes());
+
+                    if (event.estimatedEndTime && event.estimatedEndTime > 0) {
+                        var endTime = new Date(event.estimatedEndTime);
+                        $("#endHour").val(endTime.getHours());
+                        $("#endMinute").val(endTime.getMinutes());
+                    }
+                });
             });
         });
-
     });
 });
 
@@ -123,6 +164,7 @@ function draw(rows) {
             $("td.time-cell[data-position=" + position + "]").remove();
         }
         var contentHtml = "<div>";
+        contentHtml += "<div class='status-text'>" + event.status + "</div>";
         contentHtml += "<div class='description-text'>" + event.description + "</div>";
         contentHtml += "<div class='doctor-text'>" + event.doctor.name + "</div>";
         contentHtml += "<div class='patient-text'>" + event.patient.name + "</div>";
@@ -138,8 +180,6 @@ function draw(rows) {
 
             bookingWindow.data("event", $(this).data("event"));
             bookingWindow.data("mode", "EDIT");
-            bookingWindow.find(".modal-title").text("Edit");
-
             bookingWindow.modal("show");
         } else {
             console.log("non-scheduled");

@@ -39,6 +39,11 @@
     font-size: 14px;
     font-weight: bold;
 }
+.status-text {
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: underline;
+}
 
 .hidden {
     display: none;

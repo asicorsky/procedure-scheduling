@@ -15,4 +15,8 @@ public interface EventService {
 	List<EventRowDto> getEventsForToday();
 
 	EventDto getEvent(long id);
+
+	void addEvent(EventDto event, long roomId);
+
+	void changeEvent(EventDto event, long roomId);
 }

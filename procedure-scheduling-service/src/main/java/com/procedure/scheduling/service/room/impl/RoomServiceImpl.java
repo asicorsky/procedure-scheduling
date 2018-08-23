@@ -1,6 +1,7 @@
 package com.procedure.scheduling.service.room.impl;
 
 import com.procedure.scheduling.domain.entity.RoomEntity;
+import com.procedure.scheduling.domain.exceptions.EntityNotFoundException;
 import com.procedure.scheduling.domain.repository.RoomRepository;
 import com.procedure.scheduling.dto.room.RoomDto;
 import com.procedure.scheduling.service.mapper.DtoMapper;
@@ -28,6 +29,13 @@ public class RoomServiceImpl implements RoomService {
 
 		RoomEntity entity = EntityMapper.toRoomEntity(room.getName());
 		roomRepository.save(entity);
+		return DtoMapper.toRoomDto(entity);
+	}
+
+	@Override
+	public RoomDto getRoom(long id) {
+
+		RoomEntity entity = roomRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 		return DtoMapper.toRoomDto(entity);
 	}
 

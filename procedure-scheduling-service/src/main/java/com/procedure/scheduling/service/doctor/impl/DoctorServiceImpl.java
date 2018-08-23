@@ -9,6 +9,9 @@ import com.procedure.scheduling.service.mapper.EntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class DoctorServiceImpl implements DoctorService {
 
@@ -26,5 +29,12 @@ public class DoctorServiceImpl implements DoctorService {
 		DoctorEntity entity = EntityMapper.toDoctorEntity(doctor.getName());
 		doctorRepository.save(entity);
 		return DtoMapper.toDoctorDto(entity);
+	}
+
+	@Override
+	public List<DoctorDto> getAvailableDoctors() {
+
+		var entities = doctorRepository.findAvailableDoctors();
+		return entities.stream().map(DtoMapper::toDoctorDto).collect(Collectors.toList());
 	}
 }

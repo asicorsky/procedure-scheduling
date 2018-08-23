@@ -11,6 +11,7 @@ import com.procedure.scheduling.domain.repository.PatientRepository;
 import com.procedure.scheduling.domain.repository.RoomRepository;
 import com.procedure.scheduling.domain.repository.StudyRepository;
 import com.procedure.scheduling.dto.room.RoomDto;
+import com.procedure.scheduling.dto.study.Status;
 import com.procedure.scheduling.dto.study.StudyDto;
 import com.procedure.scheduling.service.mapper.DtoMapper;
 import com.procedure.scheduling.service.mapper.EntityMapper;
@@ -40,7 +41,7 @@ public class StudyServiceImpl implements StudyService {
 	}
 
 	@Override
-	public StudyDto addStudy(StudyDto study) {
+	public void addStudy(StudyDto study) {
 
 		PatientEntity patient = patientRepository.findByName(study.getPatient().getName()).orElseThrow(EntityNotFoundException::new);
 		DoctorEntity doctor = doctorRepository.findByName(study.getDoctor().getName()).orElseThrow(EntityNotFoundException::new);
@@ -51,13 +52,36 @@ public class StudyServiceImpl implements StudyService {
 						study.getEstimatedEndTime());
 
 		studyRepository.save(entity);
-		return DtoMapper.toStudyDto(entity);
 	}
 
 	@Override
-	public List<StudyDto> getStudies() {
+	public void changeStatus(Status status, long id) {
 
-		return studyRepository.findAll().stream().map(DtoMapper::toStudyDto).collect(Collectors.toList());
+		StudyEntity entity = studyRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		StatusEnum statusEnum = StatusEnum.byIdentifier(status.identifier());
+		entity.setStatus(statusEnum);
+		studyRepository.save(entity);
+	}
+
+	@Override
+	public void changeStudy(StudyDto study) {
+
+		StudyEntity entity = studyRepository.findById(study.getId()).orElseThrow(EntityNotFoundException::new);
+
+		PatientEntity patient = patientRepository.findByName(study.getPatient().getName()).orElseThrow(EntityNotFoundException::new);
+		DoctorEntity doctor = doctorRepository.findByName(study.getDoctor().getName()).orElseThrow(EntityNotFoundException::new);
+		RoomEntity room = roomRepository.findByName(study.getRoom().getName()).orElseThrow(EntityNotFoundException::new);
+		StatusEnum statusEnum = StatusEnum.byIdentifier(study.getStatus().identifier());
+
+		entity.setStatus(statusEnum);
+		entity.setDescription(study.getDescription());
+		entity.setDoctor(doctor);
+		entity.setRoom(room);
+		entity.setPatient(patient);
+		entity.setPlannedStartTime(study.getPlannedStartTime());
+		entity.setEstimatedEndTime(study.getEstimatedEndTime());
+
+		studyRepository.save(entity);
 	}
 
 	@Override
@@ -65,6 +89,13 @@ public class StudyServiceImpl implements StudyService {
 
 		RoomEntity entity = roomRepository.findByName(room.getName()).orElseThrow(EntityNotFoundException::new);
 		return studyRepository.findOverlappedStudies(from, to, entity).stream().map(DtoMapper::toStudyDto).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<StudyDto> getStudies(Date from, Date to) {
+
+		var studies = studyRepository.findStudies(from, to);
+		return studies.stream().map(DtoMapper::toStudyDto).collect(Collectors.toList());
 	}
 
 	@Override

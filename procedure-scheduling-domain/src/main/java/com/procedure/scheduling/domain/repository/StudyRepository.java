@@ -15,5 +15,8 @@ public interface StudyRepository extends JpaRepository<StudyEntity, Long> {
 	@Query("select se from StudyEntity se where se.plannedStartTime <= :to and (se.estimatedEndTime is null or se.estimatedEndTime >= :from) and se.room = :room")
 	List<StudyEntity> findOverlappedStudies(@Param("from") Date from, @Param("to") Date to, @Param("room") RoomEntity room);
 
+	@Query("select se from StudyEntity se where se.plannedStartTime >= :from and (se.estimatedEndTime is null or se.estimatedEndTime <= :to)")
+	List<StudyEntity> findStudies(@Param("from") Date from, @Param("to") Date to);
+
 	Optional<StudyEntity> findById(long id);
 }

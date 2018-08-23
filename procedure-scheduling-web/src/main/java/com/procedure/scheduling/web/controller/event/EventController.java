@@ -5,10 +5,7 @@ import com.procedure.scheduling.service.event.EventService;
 import com.procedure.scheduling.web.Navigation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(Navigation.EVENT)
@@ -37,6 +34,20 @@ public class EventController {
 
 		EventDto event = eventService.getEvent(id);
 		return ResponseEntity.ok(event);
+	}
+
+	@PostMapping(Navigation.NEW_EVENT_FOR_ROOM)
+	public ResponseEntity<?> addEvent(@PathVariable(Navigation.ROOM_ID_PATH_PARAM) long roomId, @RequestBody EventDto event) {
+
+		eventService.addEvent(event, roomId);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping(Navigation.MODIFY_EVENT_FOR_ROOM)
+	public ResponseEntity<?> modifyEvent(@PathVariable(Navigation.ROOM_ID_PATH_PARAM) long roomId, @RequestBody EventDto event) {
+
+		eventService.changeEvent(event, roomId);
+		return ResponseEntity.ok().build();
 	}
 
 }

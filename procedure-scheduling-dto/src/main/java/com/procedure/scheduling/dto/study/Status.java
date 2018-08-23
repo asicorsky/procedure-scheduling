@@ -10,7 +10,8 @@ public enum Status implements EnumConvention {
 
 	Planned("Planned"),
 	InProgress("In Progress"),
-	Finished("Finished");
+	Finished("Finished"),
+	None("None");
 
 	private final String identifier;
 

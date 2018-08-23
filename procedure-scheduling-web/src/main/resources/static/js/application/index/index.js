@@ -6,14 +6,17 @@ $(document).ready(function () {
         stompClient.subscribe("/common", function (response) {
             var event = JSON.parse(response.body);
             if (event === "ROOMS_UPDATE") {
-                console.log("Reload table...");
+                redraw();
             }
         });
     });
 
+    redraw();
+});
+
+function redraw() {
     $.post("/event/load/today", function (events) {
 
         draw(events);
     });
-
-});
+}
