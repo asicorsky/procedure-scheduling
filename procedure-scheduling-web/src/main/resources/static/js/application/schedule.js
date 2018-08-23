@@ -5,6 +5,17 @@ var MINUTES_INDEXES = {
     45: 4
 };
 
+$(document).ready(function () {
+
+    $("#roomBooking").on("show.bs.modal", function () {
+
+        $.post("/patient/load/available", function (response) {
+
+            console.log(response);
+        });
+    });
+});
+
 function draw(rows) {
 
     var thead = $(".schedule-table thead");
@@ -28,7 +39,7 @@ function draw(rows) {
     var positions = [];
     $.each(rows, function (index, element) {
 
-        html += "<tr data-id=" + element.room.id + ">";
+        html += "<tr data-id=" + element.room.id + " class='room-row'>";
         html += "<td class='room-name'>";
         html += element.room.name;
         html += "</td>";
@@ -41,7 +52,7 @@ function draw(rows) {
             var endIndex = endTime.getHours() * 4 + MINUTES_INDEXES[endTime.getMinutes()] - 1;
             positions.push({
                 for: element.room.id,
-                event: item.id,
+                item: item,
                 fromIdx: startIndex,
                 toIdx: endIndex
             });
@@ -52,22 +63,46 @@ function draw(rows) {
         }
         html += "</tr>";
     });
+    html += "<tr>";
+    for (var j = 1; j <= 97; j++) {
+        html += "<td class='dirty-fix-cell'></td>";
+    }
+    html += "</tr>";
+
     tbody.html(html);
+
+    var events = [];
 
     $.each(positions, function (index, element) {
 
         var id = element.for;
-        for (var i = element.fromIdx; i <= element.toIdx; i++) {
-            $("td.time-cell[data-position=" + id + "_" + i + "]").addClass("scheduled-cell").attr("data-event", element.event);
+        var event = element.item;
+        events[id] = event;
+        var eventId = event.id;
+        var firstCell = $("td.time-cell[data-position=" + id + "_" + element.fromIdx + "]");
+        firstCell.attr("data-event", eventId).attr("colspan", element.toIdx - element.fromIdx + 1).addClass("scheduled-cell");
+        for (var i = element.fromIdx + 1; i <= element.toIdx; i++) {
+            var position = id + "_" + i;
+            $("td.time-cell[data-position=" + position + "]").remove();
         }
+        var contentHtml = "<div>";
+        contentHtml += "<div class='description-text'>" + event.description + "</div>";
+        contentHtml += "<div class='doctor-text'>" + event.doctor.name + "</div>";
+        contentHtml += "<div class='patient-text'>" + event.patient.name + "</div>";
+        contentHtml += "</div>";
+
+        firstCell.html(contentHtml);
     });
 
-    $("td.time-cell.scheduled-cell").unbind("mouseenter mouseleave").hover(function () {
+    $(".time-cell").unbind("click").click(function () {
 
-        $(this).parent().find(".scheduled-cell[data-event=" + $(this).data("event") + "]").addClass("hovered-scheduled-cell");
-
-    }, function () {
-
-        $(this).parent().find(".scheduled-cell[data-event=" + $(this).data("event") + "]").removeClass("hovered-scheduled-cell");
+        var bookingWindow = $("#roomBooking");
+        if ($(this).hasClass("scheduled-cell")) {
+            bookingWindow.show("modal");
+            bookingWindow.data("event", $(this).data("event"));
+            bookingWindow.find(".modal-title").text("Edit");
+        } else {
+            console.log("non-scheduled");
+        }
     });
 }

@@ -5,8 +5,8 @@ import com.procedure.scheduling.domain.entity.enumeration.SexEnum;
 import javax.persistence.*;
 import java.util.Date;
 
-@Table
-@Entity(name = "patients")
+@Table(name = "patients")
+@Entity
 public class PatientEntity {
 
 	@Id

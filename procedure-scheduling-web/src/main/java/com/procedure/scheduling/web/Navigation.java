@@ -15,9 +15,11 @@ public interface Navigation {
 	String LOAD = "/load";
 	String ALL = "/all";
 	String TODAY = "/today";
+	String AVAILABLE = "/available";
 
 	String LOAD_ALL = LOAD + ALL;
 	String LOAD_TODAY = LOAD + TODAY;
+	String LOAD_AVAILABLE = LOAD + AVAILABLE;
 
 	String[] STATIC_RESOURCES = {"/img/**", "/css/**", "/js/**"};
 }
