@@ -16,10 +16,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,8 +24,8 @@ import java.util.stream.IntStream;
 public class InitializationEventListener implements ApplicationListener<ContextRefreshedEvent> {
 
 	private static final int ROOMS_COUNT = 15;
-	private static final int PATIENTS_COUNT = 30;
-	private static final int DOCTORS_COUNT = 10;
+	private static final int PATIENTS_COUNT = 35;
+	private static final int DOCTORS_COUNT = 35;
 	private static final int STUDIES_COUNT = 20;
 
 	private final RoomService roomService;
@@ -66,16 +63,25 @@ public class InitializationEventListener implements ApplicationListener<ContextR
 						DateUtils.from(randomIntFromRange(1940, 2018), randomIntFromRange(0, 11), randomIntFromRange(1, 28))))).collect(Collectors.toList());
 		var doctors = IntStream.range(0, DOCTORS_COUNT).mapToObj(idx -> doctorService.addDoctor(new DoctorDto(null, "Doctor " + String.valueOf(idx)))).collect(Collectors.toList());
 
+		var patientIds = new HashSet<Long>();
+		var doctorIds = new HashSet<Long>();
 		IntStream.range(0, STUDIES_COUNT).forEach(index -> {
 
 			RoomDto room = randomElement(rooms);
 			DatePair pair = getNonOverlappedDatesForRoom(room);
 
 			PatientDto patient = randomElement(patients);
+			while (patientIds.contains(patient.getId())) {
+				patient = randomElement(patients);
+			}
+			patientIds.add(patient.getId());
 			DoctorDto doctor = randomElement(doctors);
-			Status status = index % 5 == 0 ? Status.InProgress : index % 2 == 0 ? Status.Finished : Status.Planned;
+			while(doctorIds.contains(doctor.getId())) {
+				doctor = randomElement(doctors);
+			}
+			doctorIds.add(doctor.getId());
 
-			StudyDto dto = new StudyDto(null, "Description " + String.valueOf(index), patient, room, doctor, status, pair.from, pair.to);
+			StudyDto dto = new StudyDto(null, "Description " + String.valueOf(index), patient, room, doctor, Status.None, pair.from, pair.to);
 			studyService.addStudy(dto);
 
 		});

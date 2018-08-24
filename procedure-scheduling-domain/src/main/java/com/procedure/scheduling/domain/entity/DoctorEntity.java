@@ -1,7 +1,6 @@
 package com.procedure.scheduling.domain.entity;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "doctors")
@@ -12,9 +11,6 @@ public class DoctorEntity {
 	private Long id;
 
 	private String name;
-
-	@OneToMany(mappedBy = "doctor")
-	private List<StudyEntity> studies;
 
 	private DoctorEntity() {
 
@@ -46,13 +42,4 @@ public class DoctorEntity {
 		this.name = name;
 	}
 
-	public List<StudyEntity> getStudies() {
-
-		return studies;
-	}
-
-	public void setStudies(List<StudyEntity> studies) {
-
-		this.studies = studies;
-	}
 }

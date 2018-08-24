@@ -16,7 +16,7 @@ public interface EventService {
 
 	EventDto getEvent(long id);
 
-	void addEvent(EventDto event, long roomId);
+	EventDto addEvent(EventDto event, long roomId);
 
-	void changeEvent(EventDto event, long roomId);
+	EventDto changeEvent(EventDto event, long roomId);
 }

@@ -4,10 +4,12 @@
     <script src="../../static/js/jquery/jquery.min.js" type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
     <script src="../../static/js/popper/popper.min.js" type="text/javascript" th:src="@{/js/popper.min.js}"></script>
     <script src="../../static/js/bootstrap/bootstrap.min.js" type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src="../../static/js/datepicker/bootstrap-datepicker.js" type="text/javascript" th:src="@{/js/bootstrap-datepicker.js}"></script>
     <script src="../../static/js/application/schedule.js" type="text/javascript" th:src="@{/js/schedule.js}"></script>
 
     <link href="../../static/css/bootstrap/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
     <link href="../../static/css/application/application.css" rel="stylesheet" th:href="@{/css/application.css}"/>
+    <link href="../../static/css/datepicker/datepicker.css" rel="stylesheet" th:href="@{/css/datepicker.css}"/>
     <link href="../../static/css/application/schedule.css" rel="stylesheet" th:href="@{/css/schedule.css}"/>
 </head>
 <body>
@@ -18,12 +20,48 @@
             <tbody></tbody>
         </table>
     </div>
+    <!-- New patient modal -->
+    <div class="modal" id="newPatient" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Patient</h5>
+                    <button type="button" class="close" data-dismiss="modal" data-target="#newPatient" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="name" class="col-3 col-form-label">Patient Name:</label>
+                        <input type="text" id="name" class="col-8 form-control">
+                    </div>
+                    <div class="form-group row">
+                        <label for="sex" class="col-3 col-form-label">Sex:</label>
+                        <select id="sex" class="col-8 form-control">
+                            <option value="-1"></option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group row">
+                        <label for="dayOfBirth" class="col-3 col-form-label">Day Of Birth:</label>
+                        <input type="text" id="dayOfBirth" class="col-8 form-control datepicker" data-date-format="yyyy-mm-dd">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="savePatient">Save</button>
+                    <button type="button" class="btn btn-secondary" data-target="#newPatient" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Room Booking Modal -->
     <div class="modal" id="roomBooking" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#roomBooking" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" data-target="#roomBooking" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -122,7 +160,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="saveBooking">Save</button>
-                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#roomBooking" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-target="#roomBooking" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

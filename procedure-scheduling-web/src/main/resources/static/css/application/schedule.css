@@ -6,7 +6,12 @@
 
 .room-name {
     width: 50px;
-    padding: 15px !important;
+    padding: 28px !important;
+    border-right: 2px solid !important;
+}
+
+.name-header {
+    border-right: 2px solid !important;
 }
 
 .table-head-centered {
@@ -39,6 +44,7 @@
     font-size: 14px;
     font-weight: bold;
 }
+
 .status-text {
     font-size: 16px;
     font-weight: bold;
@@ -52,6 +58,16 @@
 #roomBooking .modal-dialog {
     width: auto;
     max-width: 40%;
+}
+
+#newPatient .modal-dialog {
+    width: auto;
+    max-width: 30%;
+}
+
+#newPatient {
+    z-index: 1200;
+    top: 20px;
 }
 
 #addPatient {

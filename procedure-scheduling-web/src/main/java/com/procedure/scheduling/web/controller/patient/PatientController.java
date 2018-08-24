@@ -1,10 +1,12 @@
 package com.procedure.scheduling.web.controller.patient;
 
+import com.procedure.scheduling.dto.patient.PatientDto;
 import com.procedure.scheduling.service.patient.PatientService;
 import com.procedure.scheduling.web.Navigation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,5 +34,12 @@ public class PatientController {
 
 		var patients = service.getPatients();
 		return ResponseEntity.ok(patients);
+	}
+
+	@PostMapping(Navigation.NEW)
+	public ResponseEntity<?> addPatient(@RequestBody PatientDto patient) {
+
+		PatientDto dto = service.addPatient(patient);
+		return ResponseEntity.ok(dto);
 	}
 }

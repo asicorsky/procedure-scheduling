@@ -64,27 +64,32 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public void addEvent(EventDto event, long roomId) {
+	public EventDto addEvent(EventDto event, long roomId) {
 
 		validate(event);
 		RoomDto room = roomService.getRoom(roomId);
 
-		studyService.addStudy(
+		StudyDto study = studyService.addStudy(
 				new StudyDto(null, event.getDescription(), event.getPatient(), room, event.getDoctor(), Status.None, event.getPlannedStartTime(), event.getEstimatedEndTime()));
 		// broadcast new event to all users
+		studyService.checkStatusesForToday();
 		webSocketService.roomsUpdate();
+		return getEvent(study.getId());
 	}
 
 	@Override
-	public void changeEvent(EventDto event, long roomId) {
+	public EventDto changeEvent(EventDto event, long roomId) {
 
 		validate(event);
 		RoomDto room = roomService.getRoom(roomId);
 
-		studyService.changeStudy(new StudyDto(event.getId(), event.getDescription(), event.getPatient(), room, event.getDoctor(), event.getStatus(), event.getPlannedStartTime(),
-				event.getEstimatedEndTime()));
+		StudyDto study = studyService.changeStudy(
+				new StudyDto(event.getId(), event.getDescription(), event.getPatient(), room, event.getDoctor(), event.getStatus(), event.getPlannedStartTime(),
+						event.getEstimatedEndTime()));
 		//broadcast update to all users
+		studyService.checkStatusesForToday();
 		webSocketService.roomsUpdate();
+		return getEvent(study.getId());
 	}
 
 	private void validate(EventDto event) {

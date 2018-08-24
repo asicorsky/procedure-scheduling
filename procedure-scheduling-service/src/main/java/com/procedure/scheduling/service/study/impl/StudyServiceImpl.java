@@ -1,5 +1,6 @@
 package com.procedure.scheduling.service.study.impl;
 
+import com.procedure.scheduling.common.utils.DateUtils;
 import com.procedure.scheduling.domain.entity.DoctorEntity;
 import com.procedure.scheduling.domain.entity.PatientEntity;
 import com.procedure.scheduling.domain.entity.RoomEntity;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +43,7 @@ public class StudyServiceImpl implements StudyService {
 	}
 
 	@Override
-	public void addStudy(StudyDto study) {
+	public StudyDto addStudy(StudyDto study) {
 
 		PatientEntity patient = patientRepository.findByName(study.getPatient().getName()).orElseThrow(EntityNotFoundException::new);
 		DoctorEntity doctor = doctorRepository.findByName(study.getDoctor().getName()).orElseThrow(EntityNotFoundException::new);
@@ -52,19 +54,33 @@ public class StudyServiceImpl implements StudyService {
 						study.getEstimatedEndTime());
 
 		studyRepository.save(entity);
+		return DtoMapper.toStudyDto(entity);
 	}
 
 	@Override
-	public void changeStatus(Status status, long id) {
+	public void checkStatusesForToday() {
 
-		StudyEntity entity = studyRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-		StatusEnum statusEnum = StatusEnum.byIdentifier(status.identifier());
-		entity.setStatus(statusEnum);
-		studyRepository.save(entity);
+		final Date now = DateUtils.now();
+		final Date from = DateUtils.toStartOfDay(now);
+		final Date to = DateUtils.toEndOfDay(now);
+		// for real world most of current logic should processed at db side
+		var studies = getStudies(from, to);
+		studies.forEach(study -> {
+			Date startTime = study.getPlannedStartTime();
+			Date endTime = study.getEstimatedEndTime();
+			Status status = study.getStatus();
+			if ((Objects.isNull(endTime) || endTime.after(now)) && startTime.before(now) && !Status.InProgress.equals(status)) {
+				changeStatus(Status.InProgress, study.getId());
+			} else if (Objects.nonNull(endTime) && now.after(endTime) && !Status.Finished.equals(status)) {
+				changeStatus(Status.Finished, study.getId());
+			} else if (now.before(startTime) && !Status.Planned.equals(status)) {
+				changeStatus(Status.Planned, study.getId());
+			}
+		});
 	}
 
 	@Override
-	public void changeStudy(StudyDto study) {
+	public StudyDto changeStudy(StudyDto study) {
 
 		StudyEntity entity = studyRepository.findById(study.getId()).orElseThrow(EntityNotFoundException::new);
 
@@ -82,6 +98,7 @@ public class StudyServiceImpl implements StudyService {
 		entity.setEstimatedEndTime(study.getEstimatedEndTime());
 
 		studyRepository.save(entity);
+		return DtoMapper.toStudyDto(entity);
 	}
 
 	@Override
@@ -110,5 +127,13 @@ public class StudyServiceImpl implements StudyService {
 
 		StudyEntity entity = studyRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 		return DtoMapper.toStudyDto(entity);
+	}
+
+	private void changeStatus(Status status, long id) {
+
+		StudyEntity entity = studyRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		StatusEnum statusEnum = StatusEnum.byIdentifier(status.identifier());
+		entity.setStatus(statusEnum);
+		studyRepository.save(entity);
 	}
 }

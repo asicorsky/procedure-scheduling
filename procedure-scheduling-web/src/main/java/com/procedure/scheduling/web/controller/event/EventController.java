@@ -39,15 +39,15 @@ public class EventController {
 	@PostMapping(Navigation.NEW_EVENT_FOR_ROOM)
 	public ResponseEntity<?> addEvent(@PathVariable(Navigation.ROOM_ID_PATH_PARAM) long roomId, @RequestBody EventDto event) {
 
-		eventService.addEvent(event, roomId);
-		return ResponseEntity.ok().build();
+		EventDto dto = eventService.addEvent(event, roomId);
+		return ResponseEntity.ok(dto);
 	}
 
 	@PostMapping(Navigation.MODIFY_EVENT_FOR_ROOM)
 	public ResponseEntity<?> modifyEvent(@PathVariable(Navigation.ROOM_ID_PATH_PARAM) long roomId, @RequestBody EventDto event) {
 
-		eventService.changeEvent(event, roomId);
-		return ResponseEntity.ok().build();
+		EventDto dto = eventService.changeEvent(event, roomId);
+		return ResponseEntity.ok(dto);
 	}
 
 }

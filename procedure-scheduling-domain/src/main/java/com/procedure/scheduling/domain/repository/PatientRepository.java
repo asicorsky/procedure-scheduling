@@ -11,6 +11,6 @@ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
 
 	Optional<PatientEntity> findByName(String name);
 
-	@Query("select p from PatientEntity p where not exists (select 1 from StudyEntity s where s.patient = p)")
+	@Query("select p from PatientEntity p where not exists (select 1 from StudyEntity s where s.patient.id = p.id)")
 	List<PatientEntity> findAvailablePatients();
 }

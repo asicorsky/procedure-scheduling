@@ -11,6 +11,6 @@ public interface DoctorRepository extends JpaRepository<DoctorEntity, Long> {
 
 	Optional<DoctorEntity> findByName(String name);
 
-	@Query("select d from DoctorEntity d join d.studies s where s is null or s.status <> 'InProgress'")
+	@Query("select d from DoctorEntity d where not exists (select 1 from StudyEntity s where s.doctor.id = d.id)")
 	List<DoctorEntity> findAvailableDoctors();
 }

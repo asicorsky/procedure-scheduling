@@ -8,7 +8,7 @@ import java.util.Arrays;
 public enum StatusEnum implements EnumConvention {
 
 	Planned("Planned"),
-	InProgress("In Progress"),
+	InProgress("InProgress"),
 	Finished("Finished"),
 	None("None");
 

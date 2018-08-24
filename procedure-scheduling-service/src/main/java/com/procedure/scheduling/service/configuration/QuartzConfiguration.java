@@ -17,7 +17,7 @@ public class QuartzConfiguration {
 	@Bean
 	public Trigger roomsUpdateTrigger() {
 
-		SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(30).repeatForever();
+		SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(10).repeatForever();
 		return TriggerBuilder.newTrigger().forJob(roomsUpdateJobDetail()).withSchedule(scheduleBuilder).build();
 	}
 }
